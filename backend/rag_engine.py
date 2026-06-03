@@ -24,13 +24,13 @@ def ingest_pdf(file_path: str, filename: str) -> int:
     Clears the existing database first to prioritize the new textbook."""
     global vector_store
     try:
-        # Clear existing collection so old textbooks don't interfere
+        # Clear existing documents safely without deleting the collection/tables themselves
         try:
-            vector_store.delete_collection()
-            # Re-initialize the vector store after deleting the collection
-            vector_store = Chroma(persist_directory=CHROMA_DB_DIR, embedding_function=embeddings)
+            existing_data = vector_store.get()
+            if existing_data and "ids" in existing_data and existing_data["ids"]:
+                vector_store.delete(ids=existing_data["ids"])
         except Exception as e:
-            print(f"Warning: Could not delete collection (might be empty): {e}")
+            print(f"Warning: Could not clear existing documents: {e}")
 
         # 1. Load the PDF using PyMuPDFLoader for much better text extraction formatting
         loader = PyMuPDFLoader(file_path)

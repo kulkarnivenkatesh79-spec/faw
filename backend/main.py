@@ -1,3 +1,11 @@
+# Override sqlite3 with pysqlite3 for cloud environments (Render, Docker, etc.)
+try:
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass  # Running locally with a modern SQLite — no override needed
+
 import os
 import shutil
 from fastapi import FastAPI, UploadFile, File, HTTPException

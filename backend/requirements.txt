@@ -8,4 +8,5 @@ sentence-transformers
 pypdf
 pymupdf
 pydantic
+pysqlite3-binary
 
