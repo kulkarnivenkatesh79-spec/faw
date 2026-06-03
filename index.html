@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fields & Waves AI Tutor — Voice-Powered Learning</title>
+    <meta name="description" content="An interactive voice-powered AI tutor for Fields and Waves, Electromagnetic Theory, Maxwell's Equations, and more. Ask questions by voice and get instant expert answers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- 3D Animated Background -->
+    <canvas id="bg3d" class="bg-3d-canvas"></canvas>
+    <div class="bg-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="url(#brandGrad)" stroke-width="2"/>
+                    <path d="M10 20 Q15 10 20 20 Q25 30 30 20" stroke="url(#brandGrad)" stroke-width="2" fill="none"/>
+                    <path d="M10 20 Q15 30 20 20 Q25 10 30 20" stroke="url(#brandGrad2)" stroke-width="1.5" fill="none" opacity="0.6"/>
+                    <defs>
+                        <linearGradient id="brandGrad" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#6366f1"/>
+                            <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                        <linearGradient id="brandGrad2" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#a855f7"/>
+                            <stop offset="100%" stop-color="#6366f1"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <span class="brand-text">Fields & Waves</span>
+        </div>
+        <div class="nav-links">
+            <a href="#home" class="nav-link active" data-section="home">Home</a>
+            <a href="#chat" class="nav-link" data-section="chat">Voice Chat</a>
+            <a href="#topics" class="nav-link" data-section="topics">Topics</a>
+            <a href="#formulas" class="nav-link" data-section="formulas">Formulas</a>
+        </div>
+        <div class="nav-status">
+            <div class="status-dot"></div>
+            <span>AI Online</span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">⚡</span>
+                <span>AI-Powered Electromagnetic Tutor</span>
+            </div>
+            <h1 class="hero-title">
+                Master <span class="gradient-text">Fields & Waves</span>
+                <br>with Your Voice
+            </h1>
+            <p class="hero-subtitle">
+                Ask complex questions about electrostatics, magnetostatics, Maxwell's equations, 
+                electromagnetic waves, transmission lines, and more — just speak naturally and get 
+                expert-level answers instantly.
+            </p>
+            <div class="hero-actions">
+                <a href="#chat" class="btn btn-primary" id="startChatBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    Start Voice Chat
+                </a>
+                <a href="#topics" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    Browse Topics
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Topics Covered</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">200+</span>
+                    <span class="stat-label">Formulas</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">∞</span>
+                    <span class="stat-label">Voice Queries</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="em-visualization" id="emVis">
+                <canvas id="waveCanvas" width="500" height="400"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upload Textbook Section -->
+    <section class="upload-section" id="upload">
+        <div class="section-header">
+            <h2 class="section-title">Train Your <span class="gradient-text">AI</span></h2>
+            <p class="section-desc">Upload your textbook PDFs to train the AI directly on your course materials.</p>
+        </div>
+        <div class="upload-container">
+            <div class="upload-dropzone" id="uploadDropzone">
+                <input type="file" id="fileInput" accept=".pdf" class="hidden-file-input">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <h3>Drag & Drop your textbook PDF</h3>
+                <p>or click to browse files</p>
+            </div>
+            <div id="uploadStatus" class="upload-status hidden">
+                <div class="upload-spinner"></div>
+                <span id="uploadStatusText">Uploading and extracting text...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voice Chat Section -->
+    <section class="chat-section" id="chat">
+        <div class="section-header">
+            <h2 class="section-title">Voice <span class="gradient-text">Chat</span></h2>
+            <p class="section-desc">Click the microphone and ask any question about Fields & Waves</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-avatar">
+                        <svg viewBox="0 0 32 32" fill="none">
+                            <circle cx="16" cy="16" r="14" stroke="url(#msgGrad)" stroke-width="1.5"/>
+                            <path d="M8 16 Q12 8 16 16 Q20 24 24 16" stroke="url(#msgGrad)" stroke-width="1.5" fill="none"/>
+                            <defs>
+                                <linearGradient id="msgGrad" x1="0" y1="0" x2="32" y2="32">
+                                    <stop offset="0%" stop-color="#6366f1"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-name">Fields & Waves Tutor</div>
+                        <div class="message-text">
+                            Welcome! I'm your Fields & Waves AI tutor. Ask me anything about electromagnetic theory — 
+                            from Coulomb's law to Maxwell's equations, transmission lines, waveguides, and beyond. 
+                            Click the microphone or type your question below!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="voice-controls">
+                    <button class="mic-button" id="micButton" title="Click to speak">
+                        <div class="mic-ripple"></div>
+                        <div class="mic-ripple mic-ripple-2"></div>
+                        <div class="mic-ripple mic-ripple-3"></div>
+                        <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" y1="19" x2="12" y2="23"/>
+                            <line x1="8" y1="23" x2="16" y2="23"/>
+                        </svg>
+                        <svg class="stop-icon hidden" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="6" width="12" height="12" rx="2"/>
+                        </svg>
+                    </button>
+                    <div class="voice-status" id="voiceStatus">Click microphone to start</div>
+                </div>
+                <div class="text-input-wrapper">
+                    <input type="text" id="textInput" class="text-input" placeholder="Or type your question here..." autocomplete="off">
+                    <button class="send-button" id="sendButton" title="Send message">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="speaker-toggle">
+                    <button class="speaker-btn active" id="speakerBtn" title="Toggle voice response">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
+                        <span>Voice Response</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Topics Section -->
+    <section class="topics-section" id="topics">
+        <div class="section-header">
+            <h2 class="section-title">Explore <span class="gradient-text">Topics</span></h2>
+            <p class="section-desc">Click any topic to learn more or ask questions about it</p>
+        </div>
+
+        <div class="topics-grid" id="topicsGrid">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- Formulas Section -->
+    <section class="formulas-section" id="formulas">
+        <div class="section-header">
+            <h2 class="section-title">Key <span class="gradient-text">Formulas</span></h2>
+            <p class="section-desc">Essential equations from electromagnetic theory</p>
+        </div>
+
+        <div class="formulas-grid" id="formulasGrid">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="brand-text">Fields & Waves AI Tutor</span>
+                <p>Your expert companion for electromagnetic theory</p>
+            </div>
+            <div class="footer-note">
+                Built with Web Speech API • Knowledge from standard EM textbooks
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="knowledge-base.js"></script>
+    <script src="app.js"></script>
+    <script src="bg3d.js"></script>
+</body>
+</html>
