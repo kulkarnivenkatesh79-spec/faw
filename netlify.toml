@@ -1,0 +1,14 @@
+[build]
+  # Publish the root directory containing index.html, styles, and js
+  publish = "."
+
+  # No build command needed for this pure HTML/CSS/JS frontend
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Allow resource sharing and prevent frame embedding
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

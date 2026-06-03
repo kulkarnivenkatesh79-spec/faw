@@ -48,6 +48,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const stopIcon = micButton.querySelector('.stop-icon');
 
     // =============================================
+    // Backend API Configuration
+    // =============================================
+    // If deployed, change this URL to your deployed FastAPI backend URL (e.g., on Render).
+    // It falls back to localhost if running locally.
+    const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://127.0.0.1:8000'
+        : 'https://faw-backend.onrender.com';
+
+    // =============================================
     // State
     // =============================================
 
@@ -594,7 +603,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Try Backend RAG First ---
         try {
-            const res = await fetch('http://127.0.0.1:8000/chat', {
+            const res = await fetch(`${BACKEND_URL}/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: query })
@@ -1008,7 +1017,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('file', file);
 
             try {
-                const res = await fetch('http://127.0.0.1:8000/upload', {
+                const res = await fetch(`${BACKEND_URL}/upload`, {
                     method: 'POST',
                     body: formData
                 });
