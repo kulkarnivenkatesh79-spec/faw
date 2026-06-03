@@ -50,11 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     // Backend API Configuration
     // =============================================
-    // If deployed, change this URL to your deployed FastAPI backend URL (e.g., on Render).
-    // It falls back to localhost if running locally.
+    // On Cloud Run, frontend & backend are served from the same origin.
+    // Locally, the backend runs on port 8000.
     const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://127.0.0.1:8000'
-        : 'https://faw-backend.onrender.com';
+        : '';
 
     // =============================================
     // State

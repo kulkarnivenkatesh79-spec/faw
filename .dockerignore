@@ -1,0 +1,10 @@
+.git
+__pycache__
+*.pyc
+backend/chroma_db
+backend/uploads
+backend/__pycache__
+.gitignore
+netlify.toml
+README.md
+*.md
