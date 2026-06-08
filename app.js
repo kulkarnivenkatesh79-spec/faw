@@ -157,18 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const startListening = async () => {
         if (!recognition) return;
 
-        // Force browser to ask for microphone permission and verify hardware works
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            // Stop the tracks immediately since we only needed to verify permission
-            stream.getTracks().forEach(track => track.stop());
-        } catch (err) {
-            console.error("Microphone access error:", err);
-            voiceStatus.textContent = 'Microphone access denied. Check browser URL bar 🔒 or Windows Sound settings.';
-            voiceStatus.classList.add('error');
-            return;
-        }
-
         try {
             recognition.start();
         } catch (e) {
@@ -601,6 +589,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return `Hello! 👋 I'm your <strong>Fields & Waves</strong> tutor. Ask me anything about electromagnetic theory — from <strong>Coulomb's law</strong> to <strong>Maxwell's equations</strong>, <strong>transmission lines</strong>, <strong>waveguides</strong>, and beyond!\n\nWhat would you like to learn about today?`;
         }
 
+        let backendResponse = null;
+
         // --- Try Backend RAG First ---
         try {
             const res = await fetch(`${BACKEND_URL}/chat`, {
@@ -610,8 +600,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (res.ok) {
                 const data = await res.json();
-                if (data.response && !data.response.includes("I couldn't find anything")) {
-                    let finalResponse = data.response;
+                backendResponse = data.response;
+
+                if (backendResponse && !backendResponse.includes("I couldn't find anything")) {
+                    let finalResponse = backendResponse;
                     
                     // See if we have a relevant image from our local topics
                     const localMatch = findBestMatch(query);
@@ -632,6 +624,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const match = findBestMatch(query);
         if (match) {
             return formatTopicResponse(match.entry);
+        }
+
+        // If no local match, and backend specifically told us it couldn't find it in the textbook,
+        // let the user know they need to upload a textbook!
+        if (backendResponse && backendResponse.includes("I couldn't find anything")) {
+            return backendResponse;
         }
 
         // --- No strong match — suggest related ---
@@ -1026,9 +1024,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json();
                 
                 uploadStatus.classList.add('success');
-                uploadStatusText.textContent = `Successfully trained on ${file.name} (${data.chunks_processed} chunks)!`;
+                if (data.status === 'processing') {
+                    uploadStatusText.textContent = `Upload successful! Processing ${file.name} in the background. It will be ready to query soon.`;
+                } else {
+                    uploadStatusText.textContent = `Successfully trained on ${file.name} (${data.chunks_processed || '?'} chunks)!`;
+                }
                 
-                setTimeout(() => uploadStatus.classList.add('hidden'), 5000);
+                setTimeout(() => uploadStatus.classList.add('hidden'), 8000);
             } catch (err) {
                 console.error(err);
                 uploadStatus.classList.add('error');
